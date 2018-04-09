@@ -26,7 +26,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KeyLogger.cpp">
+    <ClCompile Include="CYBR4450-KeyLogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
